@@ -1,66 +1,38 @@
 import streamlit as st
 
-def recommend_parts(budget):
-    cpus = [
-        ("Intel i3", 100),
-        ("Intel i5", 200),
-        ("Intel i7", 300),
-        ("Intel i9", 500)
-    ]
-
-    gpus = [
-        ("GTX 1050", 150),
-        ("RTX 2060", 350),
-        ("RTX 3070", 600),
-        ("RTX 4090", 1500)
-    ]
-
-    rams = [
-        ("8GB", 40),
-        ("16GB", 80),
-        ("32GB", 150)
-    ]
-
-    ssds = [
-        ("256GB SSD", 50),
-        ("512GB SSD", 80),
-        ("1TB SSD", 150)
-    ]
-
-    cpu_budget = budget * 0.3
-    gpu_budget = budget * 0.4
-    ram_budget = budget * 0.15
-    ssd_budget = budget * 0.15
-
-    def pick_part(parts, budget):
-        candidates = [p for p in parts if p[1] <= budget]
-        if candidates:
-            return candidates[-1]
-        else:
-            return parts[0]
-
-    cpu = pick_part(cpus, cpu_budget)
-    gpu = pick_part(gpus, gpu_budget)
-    ram = pick_part(rams, ram_budget)
-    ssd = pick_part(ssds, ssd_budget)
-
-    total_price = cpu[1] + gpu[1] + ram[1] + ssd[1]
-    return cpu, gpu, ram, ssd, total_price
+def recommend_drone(purpose):
+    drones = {
+        "촬영": [
+            ("DJI Mavic Air 2", "고해상도 카메라 탑재, 안정적인 비행"),
+            ("Autel EVO Lite+", "우수한 저조도 촬영 성능"),
+            ("DJI Phantom 4 Pro", "전문가용 고성능 카메라")
+        ],
+        "배송": [
+            ("Zipline Drone", "의약품 및 긴급 화물 배송 특화"),
+            ("Wing Drone", "도심 내 소규모 배송에 최적화"),
+            ("Amazon Prime Air", "빠른 배송을 위한 고속 드론")
+        ],
+        "취미": [
+            ("DJI Mini 3 Pro", "가볍고 조작이 쉬움"),
+            ("Ryze Tello", "초보자용 저가형 드론"),
+            ("Holy Stone HS710", "가성비 좋은 레저용 드론")
+        ]
+    }
+    return drones.get(purpose, [])
 
 def main():
-    st.title("컴퓨터 견적 추천기")
+    st.title("드론 추천기")
 
-    budget = st.number_input("예산을 입력하세요 (단위: 만원)", min_value=10, max_value=10000, value=100)
+    purpose = st.selectbox("드론 사용 목적을 선택하세요", ["촬영", "배송", "취미"])
 
-    if st.button("견적 내기"):
-        cpu, gpu, ram, ssd, total = recommend_parts(budget)
-        st.subheader("추천 견적")
-        st.write(f"CPU: {cpu[0]} - {cpu[1]} 만원")
-        st.write(f"GPU: {gpu[0]} - {gpu[1]} 만원")
-        st.write(f"RAM: {ram[0]} - {ram[1]} 만원")
-        st.write(f"SSD: {ssd[0]} - {ssd[1]} 만원")
-        st.write(f"총 합계: {total} 만원")
-        st.write(f"예산 대비 {budget - total} 만원 여유가 있습니다.")
+    if st.button("추천 받기"):
+        recommendations = recommend_drone(purpose)
+        if recommendations:
+            st.subheader(f"{purpose} 용 추천 드론 리스트")
+            for name, desc in recommendations:
+                st.write(f"- **{name}**: {desc}")
+        else:
+            st.write("적합한 드론이 없습니다.")
 
 if __name__ == "__main__":
     main()
